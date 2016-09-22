@@ -11,6 +11,7 @@
   "dependencies": {
     "exif": "^0.6.0",
     "jsmediatags": "^3.3.0",
+    "metaflac": "github:maxkueng/node-metaflac",
     "mmmagic": "^0.4.5",
     "musicmetadata": "^2.0.4"
   },
