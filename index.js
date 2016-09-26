@@ -2,15 +2,17 @@
 
 const inputFile = process.argv[2]
 
-const crypto = require("crypto")
-const fs = require("fs")
-const path = require("path")
-const mmm = require("mmmagic")
-const Magic = mmm.Magic
-const ExifImage = require("exif").ExifImage
+const crypto        = require("crypto")
+const fs            = require("fs")
+const path          = require("path")
+const mmm           = require("mmmagic")
+const Magic         = mmm.Magic
+const ExifImage     = require("exif").ExifImage
 const musicmetadata = require("musicmetadata")
-const jsmediatags = require("jsmediatags")
-const metaflac = require("metaflac")
+const jsmediatags   = require("jsmediatags")
+const metaflac      = require("metaflac")
+
+const printData = require("./src/util/printData")
 
 const magic = new Magic(mmm.MAGIC_MIME_TYPE)
 
@@ -66,4 +68,4 @@ new Promise((resolve, reject)=>{
 			}
 		})
 	})
-}).then(res=>console.log(JSON.stringify(res, null, "\t")), console.error)
+}).then(printData, console.error)
