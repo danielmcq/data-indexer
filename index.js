@@ -7,13 +7,13 @@ const fs            = require("fs")
 const path          = require("path")
 const mmm           = require("mmmagic")
 const Magic         = mmm.Magic
-const ExifImage     = require("exif").ExifImage
 const musicmetadata = require("musicmetadata")
 const jsmediatags   = require("jsmediatags")
 const metaflac      = require("metaflac")
 
 const printData = require("./src/util/printData")
 const flac = require("./src/ext/flac")
+const image = require("./src/ext/image")
 
 const magic = new Magic(mmm.MAGIC_MIME_TYPE)
 
@@ -33,18 +33,9 @@ new Promise((resolve, reject)=>{
 				sha1: crypto.createHash("sha1").update(fileBuffer).digest("hex")
 			}
 
-			if (fileType.split("/")[0] === "image") {
-				try {
-					new ExifImage({image: fileBuffer},(exifErr, exifData)=>{
-						// No exif data found
-						if (exifErr) return resolve(fileData)
-
-						resolve(Object.assign({}, fileData, {exif: exifData}))
-					})
-				} catch (unkExifErr) {
-					reject(unkExifErr)
-				}
-			} else if (fileType === "audio/x-flac") {
+			if ( image.isImage(fileType) ) {
+				image.parse({fileBuffer: fileBuffer, fileData: fileData}).then(resolve, reject)
+			} else if (fileType === flac.MIME_TYPE) {
 				metaflac.list([["exceptBlockType","SEEKTABLE"],["exceptBlockType","PICTURE"]], FILE_NAME, (flacErr, metadataBlocks)=>{
 					if (flacErr) return resolve(fileData)
 
