@@ -13,6 +13,7 @@ const jsmediatags   = require("jsmediatags")
 const metaflac      = require("metaflac")
 
 const printData = require("./src/util/printData")
+const flac = require("./src/ext/flac")
 
 const magic = new Magic(mmm.MAGIC_MIME_TYPE)
 
