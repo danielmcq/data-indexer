@@ -20,7 +20,7 @@ module.exports = (fileName: string) => new Promise((resolve: Function, reject: F
 	fs.readFile(FILE_NAME, (fsErr: Error, fileBuffer: Buffer)=>{
 		if (fsErr) return reject(fsErr)
 
-		magic.detect(fileBuffer, (err: Error, fileType: MimeType)=>{
+		magic.detect(fileBuffer, (err: Error, fileType: String)=>{
 			if (err) return reject(err)
 
 			const file = <File>{

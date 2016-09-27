@@ -19,6 +19,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@types/mmmagic": "^0.4.29",
     "@types/node": "^6.0.41",
     "typescript": "^2.0.3"
   }
