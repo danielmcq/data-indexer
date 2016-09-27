@@ -9,7 +9,6 @@ const mmm           = require("mmmagic")
 const Magic         = mmm.Magic
 const musicmetadata = require("musicmetadata")
 const jsmediatags   = require("jsmediatags")
-const metaflac      = require("metaflac")
 
 const printData = require("./src/util/printData")
 const flac = require("./src/ext/flac")
@@ -35,16 +34,8 @@ new Promise((resolve, reject)=>{
 
 			if ( image.isImage(fileType) ) {
 				image.parse({fileBuffer: fileBuffer, fileData: fileData}).then(resolve, reject)
-			} else if (fileType === flac.MIME_TYPE) {
-				metaflac.list([["exceptBlockType","SEEKTABLE"],["exceptBlockType","PICTURE"]], FILE_NAME, (flacErr, metadataBlocks)=>{
-					if (flacErr) return resolve(fileData)
-
-					metaflac.showMD5sum({}, FILE_NAME, (flacMd5Err, flacMd5sum)=>{
-						if (flacMd5Err) return resolve(fileData)
-
-						resolve(Object.assign({}, fileData, {metaFlacMd5: flacMd5sum, metaFlac: metadataBlocks}))
-					})
-				})
+			} else if (flac.isFlac(fileType)) {
+				flac.parse({FILE_NAME:FILE_NAME, fileData: fileData}).then(resolve, reject)
 			} else if (fileType.split("/")[0] === "audio") {
 				/*musicmetadata(fs.createReadStream(FILE_NAME), (id3Err, metadata)=>{
 					if (id3Err) return resolve(fileData)

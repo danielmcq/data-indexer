@@ -1,7 +1,7 @@
 const metaflac = require("metaflac")
 
-exports.MIME_TYPE = "audio/x-flac"
-exports.default = file=>new Promise((resolve, reject)=>{
+exports.isFlac = mimeType => mimeType === "audio/x-flac"
+exports.parse = file=>new Promise((resolve, reject)=>{
 	metaflac.list([["exceptBlockType","SEEKTABLE"],["exceptBlockType","PICTURE"]], file.FILE_NAME, (flacErr, metadataBlocks)=>{
 		if (flacErr) return resolve(file.fileData)
 
