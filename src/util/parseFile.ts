@@ -14,26 +14,21 @@ const image = require("../ext/image")
 
 const magic = new mmm.Magic(mmm.MAGIC_MIME_TYPE)
 
-module.exports = (fileName: string) => new Promise((resolve, reject)=>{
+module.exports = (fileName: string) => new Promise((resolve: Function, reject: Function)=>{
 	const FILE_NAME = path.resolve(fileName)
 
-	fs.readFile(FILE_NAME, (fsErr, fileBuffer)=>{
+	fs.readFile(FILE_NAME, (fsErr: Error, fileBuffer: Buffer)=>{
 		if (fsErr) return reject(fsErr)
 
-		magic.detect(fileBuffer, (err: Object, fileType: string)=>{
+		magic.detect(fileBuffer, (err: Error, fileType: MimeType)=>{
 			if (err) return reject(err)
 
-			const fileData = {
+			const file = <File>{
 				path: FILE_NAME,
 				type: fileType,
+				buffer: fileBuffer,
 				md5: crypto.createHash("md5").update(fileBuffer).digest("hex"),
 				sha1: crypto.createHash("sha1").update(fileBuffer).digest("hex")
-			}
-
-			const file = <File>{
-				fname: FILE_NAME,
-				buffer: fileBuffer,
-				data: fileData
 			}
 
 			if ( image.isImage(fileType) ) {
@@ -43,7 +38,7 @@ module.exports = (fileName: string) => new Promise((resolve, reject)=>{
 			} else if (audio.isAudio(fileType)) {
 				audio.parse(file).then(resolve, reject)
 			} else {
-				resolve(fileData)
+				resolve(file)
 			}
 		})
 	})

@@ -1,5 +1,8 @@
 export interface File {
 	buffer: Buffer,
-	data: Object,
-	fname: String
+	path: String,
+	type: MimeType,
+	md5: String,
+	sha1: String,
+	meta?: Object
 }
