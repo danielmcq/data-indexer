@@ -1,1 +1,1 @@
-module.exports = data=>console.log(JSON.stringify(data, null, "\t"))
+module.exports = (data: Object) => console.log(JSON.stringify(data, null, "\t"))
