@@ -2,15 +2,14 @@
 
 const inputFile = process.argv[2]
 
-const crypto        = require("crypto")
-const fs            = require("fs")
-const path          = require("path")
-const mmm           = require("mmmagic")
-const Magic         = mmm.Magic
-const musicmetadata = require("musicmetadata")
-const jsmediatags   = require("jsmediatags")
+const crypto = require("crypto")
+const fs     = require("fs")
+const path   = require("path")
+const mmm    = require("mmmagic")
+const Magic  = mmm.Magic
 
 const printData = require("./src/util/printData")
+const audio = require("./src/ext/audio")
 const flac = require("./src/ext/flac")
 const image = require("./src/ext/image")
 
@@ -36,16 +35,8 @@ new Promise((resolve, reject)=>{
 				image.parse({fileBuffer: fileBuffer, fileData: fileData}).then(resolve, reject)
 			} else if (flac.isFlac(fileType)) {
 				flac.parse({FILE_NAME:FILE_NAME, fileData: fileData}).then(resolve, reject)
-			} else if (fileType.split("/")[0] === "audio") {
-				/*musicmetadata(fs.createReadStream(FILE_NAME), (id3Err, metadata)=>{
-					if (id3Err) return resolve(fileData)
-
-					resolve(Object.assign({}, fileData, {audioMeta: metadata}))
-				})*/
-				jsmediatags.read(fileBuffer, {
-					onSuccess: tag => resolve(Object.assign({}, fileData, {audioMeta: tag})),
-					onError: tagErr => resolve(fileData)
-				})
+			} else if (audio.isAudio(fileType)) {
+				audio.parse({FILE_NAME:FILE_NAME, fileData: fileData, fileBuffer: fileBuffer}).then(resolve, reject)
 			} else {
 				resolve(fileData)
 			}
