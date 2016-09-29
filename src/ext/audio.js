@@ -3,16 +3,17 @@
 const musicmetadata = require("musicmetadata")
 const jsmediatags   = require("jsmediatags")
 
-exports.isAudio = mimeType => mimeType.split("/")[0] === "audio"
+exports.isAudio = file => file.type.split("/")[0] === "audio"
 
 exports.parse = file => new Promise((resolve, reject)=>{
-	/*musicmetadata(fs.createReadStream(file.FILE_NAME), (id3Err, metadata)=>{
-		if (id3Err) return resolve(file.fileData)
+	/*musicmetadata(fs.createReadStream(file.path), (id3Err, metadata)=>{
+		if (id3Err) return resolve(file)
 
-		resolve(Object.assign({}, file.fileData, {audioMeta: metadata}))
+		file.meta.audioMeta = metadata
+		resolve(file)
 	})*/
-	jsmediatags.read(file.fileBuffer, {
-		onSuccess: tag => resolve(Object.assign({}, file.fileData, {audioMeta: tag})),
-		onError: tagErr => resolve(file.fileData)
+	jsmediatags.read(file.buffer, {
+		onSuccess: tag => resolve(file.meta.audioMeta = tag && file),
+		onError: tagErr => resolve(file)
 	})
 })

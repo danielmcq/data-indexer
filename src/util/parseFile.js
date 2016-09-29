@@ -17,24 +17,26 @@ module.exports = fileName => new Promise((resolve, reject)=>{
 	fs.readFile(FILE_NAME, (fsErr, fileBuffer)=>{
 		if (fsErr) return reject(fsErr)
 
-		magic.detect(fileBuffer, (err, fileType)=>{
+		magic.detect(fileBuffer, (err, mimeType)=>{
 			if (err) return reject(err)
 
-			const fileData = {
+			const file = {
 				path: FILE_NAME,
-				type: fileType,
+				type: mimeType,
+				meta: {},
+				buffer: fileBuffer,
 				md5: crypto.createHash("md5").update(fileBuffer).digest("hex"),
 				sha1: crypto.createHash("sha1").update(fileBuffer).digest("hex")
 			}
 
-			if ( image.isImage(fileType) ) {
-				image.parse({fileBuffer: fileBuffer, fileData: fileData}).then(resolve, reject)
-			} else if (flac.isFlac(fileType)) {
-				flac.parse({FILE_NAME:FILE_NAME, fileData: fileData}).then(resolve, reject)
-			} else if (audio.isAudio(fileType)) {
-				audio.parse({FILE_NAME:FILE_NAME, fileData: fileData, fileBuffer: fileBuffer}).then(resolve, reject)
+			if ( image.isImage(file) ) {
+				image.parse(file).then(resolve, reject)
+			} else if (flac.isFlac(file)) {
+				flac.parse(file).then(resolve, reject)
+			} else if (audio.isAudio(file)) {
+				audio.parse(file).then(resolve, reject)
 			} else {
-				resolve(fileData)
+				resolve(file)
 			}
 		})
 	})

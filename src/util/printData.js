@@ -1,1 +1,7 @@
-module.exports = data=>console.log(JSON.stringify(data, null, "\t"))
+module.exports = data => {
+	let printData = Object.assign({}, data)
+
+	delete printData.buffer
+
+	console.log(JSON.stringify(printData, null, "\t"))
+}
